@@ -41,3 +41,11 @@ start: 10:00
 stop: 11:13
 
 It took me an embarrassing amount of time to correctly produce points on the diagonal. I made a sequence of simple and avoidable errors, such as swapping the `+` and `*`, and I held onto a conceptual error, that the slope could be used to determine the sign of both the change in x and the change in y, for far too long. Had I slowed down and sketched some diagonal lines I suspect I would have caught these errors much sooner and cut my time in half.
+
+# Day 06
+
+20211206
+start: 18:08
+stop: 18:45
+
+I used a Counter to map days to birth to a count of fish that will give birth in that many days, but a list would have worked as well. My initial implementation of the `advance_time()`, which iterated over the items in the school, that caused the test to fail at day 16. It was off by one, `20` instead of the expected `21`. I couldn't see the error in the amount of time I wanted to spend looking for it, so I re-wrote the implementation to iterate over a set range of days. That version passed. I have since tried to replicate my failing implementation and haven't been able to.
