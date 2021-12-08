@@ -49,3 +49,12 @@ start: 18:08
 stop: 18:45
 
 I used a Counter to map days to birth to a count of fish that will give birth in that many days, but a list would have worked as well. My initial implementation of the `advance_time()`, which iterated over the items in the school, that caused the test to fail at day 16. It was off by one, `20` instead of the expected `21`. I couldn't see the error in the amount of time I wanted to spend looking for it, so I re-wrote the implementation to iterate over a set range of days. That version passed. I have since tried to replicate my failing implementation and haven't been able to.
+
+# Day 07
+
+20211207
+start: 17:45
+submitted: 18:24
+stopped: 18:39
+
+My initial implementation relied on summing to get the fuel cost in part two. I'm surprised it solved part two within a "reasonable" amount of time (~15 seconds). At first, I thought the performance issue was in the `O(n^2)`, where `n` is the number of positions, used to determine which position minimized total fuel cost. I was not able to think of another model or a mathematical formula that would obviate checking every ending position. It took me several minutes after submitting the solution to remember that sums of a range could be calculated in constant time. That change reduced the running time to around 370ms.
