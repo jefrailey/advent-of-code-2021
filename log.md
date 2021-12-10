@@ -58,3 +58,15 @@ submitted: 18:24
 stopped: 18:39
 
 My initial implementation relied on summing to get the fuel cost in part two. I'm surprised it solved part two within a "reasonable" amount of time (~15 seconds). At first, I thought the performance issue was in the `O(n^2)`, where `n` is the number of positions, used to determine which position minimized total fuel cost. I was not able to think of another model or a mathematical formula that would obviate checking every ending position. It took me several minutes after submitting the solution to remember that sums of a range could be calculated in constant time. That change reduced the running time to around 370ms.
+
+# Day 08
+
+20211208
+start: 17:10
+stop: 17:54
+
+20211209
+start: 18:46
+stop: 20:39
+
+This one was a slog. I didn't think it was especially challenging--though the amount of time I took may suggest otherwise--but it required much more time than I expected. A small part of that was that most of the work I did on 20211208 was not helpful--I was more focused on my engagement at 18:00 than on understanding the problem domain. I solved the example "on paper" first. Generally, I think paper's the preferred tool for determining an algorithm to solve a logic puzzle, but since my initial paper solution worked, I'm wondering if, in this case, it was worth the extra time.
