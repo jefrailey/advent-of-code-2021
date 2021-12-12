@@ -70,3 +70,11 @@ start: 18:46
 stop: 20:39
 
 This one was a slog. I didn't think it was especially challenging--though the amount of time I took may suggest otherwise--but it required much more time than I expected. A small part of that was that most of the work I did on 20211208 was not helpful--I was more focused on my engagement at 18:00 than on understanding the problem domain. I solved the example "on paper" first. Generally, I think paper's the preferred tool for determining an algorithm to solve a logic puzzle, but since my initial paper solution worked, I'm wondering if, in this case, it was worth the extra time.
+
+# Day 09
+
+2021212
+start: 9:15
+stop: 10:31
+
+The solution to part two could be improved a fair bit. Since every point on the heightmap that has a value less than 9 is in exactly one basin, it's not essential to find the minima first.
