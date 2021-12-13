@@ -78,3 +78,11 @@ start: 9:15
 stop: 10:31
 
 The solution to part two could be improved a fair bit. Since every point on the heightmap that has a value less than 9 is in exactly one basin, it's not essential to find the minima first.
+
+# Day 10
+
+20211213
+start 07:45
+stop: 08:35
+
+My initial implementation for part one tracked state using counters for each of the bracket pairs instead of a stack of opening brackets. That implementation did not work on the first attempt, so I immediately pivoted to the implementation that I knew would work. After further consideration, I do not think that counters alone can replace a stack as the order of opening brackets matters.
