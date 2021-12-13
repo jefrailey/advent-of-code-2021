@@ -86,3 +86,11 @@ start 07:45
 stop: 08:35
 
 My initial implementation for part one tracked state using counters for each of the bracket pairs instead of a stack of opening brackets. That implementation did not work on the first attempt, so I immediately pivoted to the implementation that I knew would work. After further consideration, I do not think that counters alone can replace a stack as the order of opening brackets matters.
+
+# Day 11
+
+20211213
+start: 12:28
+stop: 13:46
+
+The `OctopusMap` was a little clumsy to work with. An improvement would be to return `list[Octopus]` from the function that converts a `Grid` to `Octopus`es. It's also not necessary for `Octopus` to have access to a map--neighbors did not need to be a property. The converter could have determined each `Octopus`'s neighbors and set them. `Octopus` itself, is of course, unnecessary, but I found it easier to mentally model the solution as operating on octopuses instead of points on a plane.
