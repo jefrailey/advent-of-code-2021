@@ -106,3 +106,11 @@ stop: 16:25
 20211214
 start 17:35
 stop: 18:18
+
+# Day 14
+
+20211214
+start: 18:22
+stop: 19:39
+
+An idea for improving performance enough to solve part two is to dynamically add insertion rules for sequences of elements longer than two as they appear.
