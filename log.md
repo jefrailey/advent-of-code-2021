@@ -114,3 +114,9 @@ start: 18:22
 stop: 19:39
 
 An idea for improving performance enough to solve part two is to dynamically add insertion rules for sequences of elements longer than two as they appear.
+
+20211215
+start: 16:47
+stop: 17:47
+
+I first tried divide and concur, which was a slight improvement, but was still way too slow and, if storing intermediate steps, ran out of memory. After looking at the size of expected outcomes ("...the most common element is B (occurring 2192039569602 times)..."), I realized that maintaining any sort of contiguous representation in memory would be impossible. I next tried tracking counts of pairs. This seems to work, in so far as it completes in a reasonable amount of time, but the final counts are off due to double counting of characters that appear in two pairs, but only appear once in the polymer. E.g. in `NBN`, there are two pairs, `NB` and `BN`, with a total of two `B`s, but there's only one `B` in the final polymer. Simply halving the count seems wrong and produces the wrong answer. Despite that, I'm certain that representing the polymer as a map of pairs to counts is the correct approach. Maybe in addition to pairs, we need to track the counts of individual elements as the insertion occurs.

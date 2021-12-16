@@ -1,4 +1,5 @@
 from collections import Counter
+import math
 
 import pytest
 
@@ -44,13 +45,24 @@ TEST_RULES_MAP = {
 def solve_part_one(template: str, rules: list[str]) -> int:
     """Return the difference between the quantity of the most and least common elements after ten rounds of pair insertion."""
     rules_map = map_rules(rules)
-    polymer = template
+    pairs = to_pairs(template)
+    pair_counts = Counter(pairs)
     for _ in range(10):
-        polymer = insert(polymer, rules_map)
-    counts = Counter(polymer)
-    return max(count for count in counts.values()) - min(
-        count for count in counts.values()
+        pair_counts = insert(pair_counts, rules_map)
+    counts: Counter[str] = Counter()
+    for pair, count in pair_counts.items():
+        left, right = pair
+        counts[left] += count
+        counts[right] += count
+    return math.ceil(max(count for count in counts.values()) / 2) - math.ceil(
+        min(count for count in counts.values()) / 2
     )
+
+
+def to_pairs(polymer: str) -> list[str]:
+    return [
+        polymer[i : i + 2] for i in range(len(polymer)) if len(polymer[i : i + 2]) == 2
+    ]
 
 
 def test_solve_part_one() -> None:
@@ -60,23 +72,17 @@ def test_solve_part_one() -> None:
     assert actual == expected
 
 
-def insert(polymer: str, rules_map: dict[str, str]) -> str:
+def insert(pair_counts: Counter[str], rules_map: dict[str, str]) -> Counter[str]:
     """Return a polymer with elements inserted per the pair insertion rules."""
-    pairs = [
-        polymer[i : i + 2] for i in range(len(polymer)) if len(polymer[i : i + 2]) == 2
-    ]
-    next_: list[str] = []
-    if len(pairs) == 1:
-        pair = pairs[0]
-        left, right = pair
+    new_counts: Counter[str] = Counter(pair_counts)
+    for pair, count in pair_counts.items():
+        new_counts[pair] -= count
         middle = rules_map[pair]
-        return f"{left}{middle}{right}"
-    for pair in pairs:
-        left, _ = pair
-        middle = rules_map[pair]
-        next_.append("".join([left, middle]))
-    next_.append(polymer[-1])
-    return "".join(next_)
+        left = "".join([pair[0], middle])
+        right = "".join([middle, pair[1]])
+        new_counts[left] += count
+        new_counts[right] += count
+    return new_counts
 
 
 @pytest.mark.parametrize(
@@ -96,8 +102,9 @@ def insert(polymer: str, rules_map: dict[str, str]) -> str:
     ),
 )
 def test_insert(polymer: str, rules: dict[str, str], expected: str) -> None:
-    actual = insert(polymer, rules)
-    assert actual == expected
+    pair_counts = Counter(to_pairs(polymer))
+    actual = insert(pair_counts, rules)
+    assert actual == Counter(to_pairs(expected))
 
 
 def map_rules(rules: list[str]) -> dict[str, str]:
@@ -123,13 +130,25 @@ Apply 40 steps of pair insertion to the polymer template and find the most and l
 def solve_part_two(template: str, rules: list[str]) -> int:
     """Return the difference between the quantity of the most and least common elements after forty rounds of pair insertion."""
     rules_map = map_rules(rules)
-    polymer = template
+    pairs = to_pairs(template)
+    pair_counts = Counter(pairs)
     for _ in range(40):
-        polymer = insert(polymer, rules_map)
-    counts = Counter(polymer)
+        pair_counts = insert(pair_counts, rules_map)
+    counts: Counter[str] = Counter()
+    for pair, count in pair_counts.items():
+        left, right = pair
+        counts[left] += count
+        counts[right] += count
     return max(count for count in counts.values()) - min(
         count for count in counts.values()
     )
+
+
+def test_solve_part_two() -> None:
+    expected = 2188189693529
+    template = "NNCB"
+    actual = solve_part_two(template, TEST_RULES)
+    assert actual == expected
 
 
 if __name__ == "__main__":
@@ -150,8 +169,8 @@ if __name__ == "__main__":
         solve_part_one(template, rules),
         sep="\n\t",
     )
-    # print(
-    #     "",
-    #     solve_part_two(),
-    #     sep="\n",
-    # )
+    print(
+        "",
+        solve_part_two(template, rules),
+        sep="\n",
+    )
