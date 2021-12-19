@@ -1,5 +1,4 @@
 from collections import Counter
-import math
 
 import pytest
 
@@ -44,25 +43,22 @@ TEST_RULES_MAP = {
 
 def solve_part_one(template: str, rules: list[str]) -> int:
     """Return the difference between the quantity of the most and least common elements after ten rounds of pair insertion."""
+    return _solve(template, rules, 10)
+
+
+def _solve(template: str, rules: list[str], steps: int) -> int:
+    """Return the difference between the quantity of the most and least common elements after a given number of rounds."""
     rules_map = map_rules(rules)
-    pairs = to_pairs(template)
-    pair_counts = Counter(pairs)
-    for _ in range(10):
-        pair_counts = insert(pair_counts, rules_map)
-    counts: Counter[str] = Counter()
-    for pair, count in pair_counts.items():
-        left, right = pair
-        counts[left] += count
-        counts[right] += count
-    return math.ceil(max(count for count in counts.values()) / 2) - math.ceil(
-        min(count for count in counts.values()) / 2
+    counts = Counter(
+        template[i : i + 2]
+        for i in range(len(template))
+        if len(template[i : i + 2]) == 2
     )
-
-
-def to_pairs(polymer: str) -> list[str]:
-    return [
-        polymer[i : i + 2] for i in range(len(polymer)) if len(polymer[i : i + 2]) == 2
-    ]
+    counts.update(template)
+    for _ in range(steps):
+        counts = insert(counts, rules_map)
+    element_counts = [count for (key, count) in counts.items() if len(key) == 1]
+    return max(element_counts) - min(element_counts)
 
 
 def test_solve_part_one() -> None:
@@ -72,39 +68,65 @@ def test_solve_part_one() -> None:
     assert actual == expected
 
 
-def insert(pair_counts: Counter[str], rules_map: dict[str, str]) -> Counter[str]:
+def insert(counts: Counter[str], rules_map: dict[str, str]) -> Counter[str]:
     """Return a polymer with elements inserted per the pair insertion rules."""
-    new_counts: Counter[str] = Counter(pair_counts)
-    for pair, count in pair_counts.items():
+    new_counts: Counter[str] = Counter(counts)
+    pairs = ((key, count) for (key, count) in counts.items() if len(key) == 2)
+    for pair, count in pairs:
         new_counts[pair] -= count
-        middle = rules_map[pair]
-        left = "".join([pair[0], middle])
-        right = "".join([middle, pair[1]])
-        new_counts[left] += count
-        new_counts[right] += count
+        new_element = rules_map[pair]
+        left_pair = "".join([pair[0], new_element])
+        right_pair = "".join([new_element, pair[1]])
+        new_counts[left_pair] += count
+        new_counts[right_pair] += count
+        new_counts[new_element] += count
     return new_counts
 
 
 @pytest.mark.parametrize(
-    "polymer,rules,expected",
+    "initial_counts,rules,expected",
     (
-        ["NN", TEST_RULES_MAP, "NCN"],
-        ["NC", TEST_RULES_MAP, "NBC"],
-        ["CB", TEST_RULES_MAP, "CHB"],
-        ["NNCB", TEST_RULES_MAP, "NCNBCHB"],
-        ["NCNBCHB", TEST_RULES_MAP, "NBCCNBBBCBHCB"],
-        ["NBCCNBBBCBHCB", TEST_RULES_MAP, "NBBBCNCCNBBNBNBBCHBHHBCHB"],
         [
-            "NBBBCNCCNBBNBNBBCHBHHBCHB",
+            Counter({"NN": 1}),
             TEST_RULES_MAP,
-            "NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB",
+            Counter({"NN": 0, "C": 1, "NC": 1, "CN": 1}),
+        ],
+        [
+            Counter({"NC": 1}),
+            TEST_RULES_MAP,
+            Counter({"NC": 0, "NB": 1, "BC": 1, "B": 1}),
+        ],
+        [
+            Counter({"CB": 1}),
+            TEST_RULES_MAP,
+            Counter({"CB": 0, "CH": 1, "HB": 1, "H": 1}),
+        ],
+        [
+            Counter({"NN": 1, "NC": 1, "CB": 1}),
+            TEST_RULES_MAP,
+            Counter(
+                {
+                    "NN": 0,
+                    "CB": 0,
+                    "C": 1,
+                    "NC": 1,
+                    "CN": 1,
+                    "CH": 1,
+                    "HB": 1,
+                    "H": 1,
+                    "NB": 1,
+                    "BC": 1,
+                    "B": 1,
+                }
+            ),
         ],
     ),
 )
-def test_insert(polymer: str, rules: dict[str, str], expected: str) -> None:
-    pair_counts = Counter(to_pairs(polymer))
-    actual = insert(pair_counts, rules)
-    assert actual == Counter(to_pairs(expected))
+def test_insert(
+    initial_counts: Counter[str], rules: dict[str, str], expected: Counter[str]
+) -> None:
+    actual = insert(initial_counts, rules)
+    assert actual == expected
 
 
 def map_rules(rules: list[str]) -> dict[str, str]:
@@ -129,19 +151,7 @@ Apply 40 steps of pair insertion to the polymer template and find the most and l
 
 def solve_part_two(template: str, rules: list[str]) -> int:
     """Return the difference between the quantity of the most and least common elements after forty rounds of pair insertion."""
-    rules_map = map_rules(rules)
-    pairs = to_pairs(template)
-    pair_counts = Counter(pairs)
-    for _ in range(40):
-        pair_counts = insert(pair_counts, rules_map)
-    counts: Counter[str] = Counter()
-    for pair, count in pair_counts.items():
-        left, right = pair
-        counts[left] += count
-        counts[right] += count
-    return max(count for count in counts.values()) - min(
-        count for count in counts.values()
-    )
+    return _solve(template, rules, 40)
 
 
 def test_solve_part_two() -> None:
