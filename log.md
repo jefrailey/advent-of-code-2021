@@ -132,3 +132,15 @@ start: 09:09
 stop: 09:32
 
 Improved readability.
+
+# Day 15
+
+20211219
+start: 10:12
+stop: 11:52
+
+20211219
+start: 13:00
+answer to part one: 13:15
+
+My initial approach was to use Dijkstra's algorithm for finding the shortest path between two nodes. This worked correctly, but did not complete for the full problem size. This was a bit surprising because, from memory and from analyzing the algorithm, I thought the running time was bounded by `O(n^2)` where `n` is the number of nodes. I was fairly confident I had the algorithm correct, which turned out to be a mistake, so I moved on. My next approach was to iteratively generate a map of cumulative risk by adding the risk of the current coordinate to the minimum cumulative risk of its neighbors above and to the left. This completes and provides the correct answer for the 10 by 10 test, but currently provided an answer that was too high for the 100 by 100 problem. This is due to the incorrect assumption that the shortest path always advances by one step to the left or the right. While away from the problem, I was not able to think of a way to generate a cumulative risk map without constraints on the direction of dependence--after seeing that the second part of the problem increases the number of points 25 times, I suspect this may be possible and a way to solve part two with a reasonable amount of computation--and I suspected that I was correct about the running time of Dijkstra's algorithm and wrong about my implementation. I compared my implementation and the one on Wikipedia and discovered my error. My implementation was adding the neighbor node to the `queue.PriorityQueue` even if the projected cumulative risk for the current path through the neighbor was higher than a previously discovered path through that neighbor.
