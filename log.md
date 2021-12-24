@@ -150,3 +150,25 @@ start: 17:39
 stop: 18:47
 
 Figuring out how to extend the risk map took way more time than it "should" have. I still think there's likely a linear algorithm to generate a minimum cumulative risk map, but I wasn't able to come up with it. The formatting of in `test_extend_map()` seems like a good reason to not use Black for formatting.
+
+# Day 16
+
+20211221
+start: 19:08
+stop: 19:12
+
+20211222
+start: 16:42
+stop: 17:38
+
+20211223
+start: 09:40
+stop: 10:45
+
+20211224
+start: 09:08
+stop: 10:23
+
+I found the problem description to be misleading. Left padding the binary representation with zeroes was mentioned in the context of literal value packets, "Literal value packets encode a single binary number. To do this, the binary number is padded with leading zeroes until its length is a multiple of four bits..." This lead me to attempt to left pad just the encoded literal value, i.e. the portion of a packet between the type id and the start of the next packet. Fortunately, I noticed one of the examples left padded the entire packet and not just the value portion of a literal value. Unfortunately, I did not notice that until after spending a lot of time trying to understand why my implementation did not work.
+
+Similarly, one of the examples for solving part two, "04005AC33890 finds the product of 6 and 9, resulting in the value 54," appears to be wrong. `0x04005AC33890` is `0b1000000000001011010110000110011100010010000`, which has an outermost operator of sum, not product. Furthermore, attempting to interpret the parsed packet causes `max()` to throw a `ValueError` because the corresponding operator packet does not have children. My implementation returned the correct answer for part two, so I believe this is an issue with the example.
